@@ -6,6 +6,9 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.db.models.deletion import ProtectedError
 from django.views.decorators.http import require_POST
+from rest_framework import viewsets
+from .models import Employee, Department
+from .serializers import EmployeeSerializer, DepartmentSerializer
 
 from .models import Department, Employee
 from .forms import EmployeeForm, DepartmentForm
@@ -141,6 +144,9 @@ def employee_detail(request, pk):
         {'employee': employee}
     )
 
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.select_related('department')
+    serializer_class = EmployeeSerializer
 
 # Add Employee
 @hr_required
@@ -305,6 +311,10 @@ def department_add(request):
             'title': 'Add Department'
         }
     )
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
 
 
 # Edit Department
